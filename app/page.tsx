@@ -27,13 +27,19 @@ export default function HomePage() {
     };
     check();
 
-    // Auto-fill from URL params
+    // Auto-fill from URL params or default to current origin
     const params = new URLSearchParams(window.location.search);
     const urlParam = params.get("url") || params.get("api");
     const pwParam = params.get("pw") || params.get("password");
-    if (urlParam) setApiUrl(urlParam);
+    
+    if (urlParam) {
+      setApiUrl(urlParam);
+    } else if (typeof window !== "undefined") {
+      setApiUrl(window.location.origin);
+    }
+    
     if (pwParam) setPassword(pwParam);
-
+    
     // Auto-login if both params provided
     if (urlParam && pwParam) {
       handleLogin(urlParam, pwParam);
