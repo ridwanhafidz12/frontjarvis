@@ -47,6 +47,25 @@ body::before {
   z-index: 0;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pulse-dot {
+  animation: pulse 2s infinite ease-in-out;
+}
+
 /* Neon glow */
 .neon-text {
   color: var(--jarvis-primary);
@@ -56,6 +75,64 @@ body::before {
 .neon-border {
   border: 1px solid var(--jarvis-primary);
   box-shadow: 0 0 10px var(--jarvis-glow), inset 0 0 10px rgba(0, 212, 255, 0.05);
+}
+
+/* Sidebar Item */
+.nav-item {
+  color: rgba(226, 232, 240, 0.5);
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background: rgba(0, 212, 255, 0.05) !important;
+  color: var(--jarvis-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), transparent) !important;
+  color: var(--jarvis-primary);
+  border-left: 3px solid var(--jarvis-primary) !important;
+  border-radius: 0 10px 10px 0 !important;
+}
+
+/* Responsive Table */
+@media (max-width: 640px) {
+  .responsive-hide { display: none; }
+  .jarvis-card { border-radius: 8px; }
+}
+
+/* Input Styles */
+.jarvis-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--jarvis-border);
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.jarvis-input:focus {
+  border-color: var(--jarvis-primary);
+  box-shadow: 0 0 10px var(--jarvis-glow);
+}
+
+/* Spinner */
+.spinner {
+  border: 2px solid rgba(0, 212, 255, 0.1);
+  border-top-color: var(--jarvis-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scrollbar customization */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--jarvis-primary) transparent;
 }
 
 /* Glass effect */

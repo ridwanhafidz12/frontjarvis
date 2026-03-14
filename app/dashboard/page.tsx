@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("home");
   const [online, setOnline] = useState<boolean | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [time, setTime] = useState(new Date());
 
   // Auth check
@@ -42,6 +43,24 @@ export default function DashboardPage() {
     if (!base || !token) {
       router.replace("/");
     }
+    
+    // Auto-close sidebar on small screens
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  }, []);
+
+  // Handle resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Clock
@@ -75,132 +94,190 @@ export default function DashboardPage() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", position: "relative", zIndex: 1 }}>
+      {/* Mobile Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          onClick={() => setMobileMenuOpen(false)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", 
+            backdropFilter: "blur(4px)", zIndex: 90,
+          }} 
+        />
+      )}
+
       {/* Sidebar */}
       <aside style={{
-        width: sidebarOpen ? 220 : 60,
+        width: sidebarOpen ? 240 : (window.innerWidth < 768 ? 0 : 70),
         minHeight: "100vh",
-        background: "rgba(10,15,30,0.95)",
-        borderRight: "1px solid rgba(0,212,255,0.1)",
+        background: "rgba(10,15,30,0.98)",
+        borderRight: "1px solid rgba(0,212,255,0.15)",
         display: "flex", flexDirection: "column",
-        transition: "width 0.3s ease",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         flexShrink: 0,
-        position: "sticky", top: 0, height: "100vh",
+        position: window.innerWidth < 768 ? "fixed" : "sticky", 
+        top: 0, height: "100vh",
+        left: window.innerWidth < 768 && !mobileMenuOpen ? -240 : 0,
+        zIndex: 100,
         backdropFilter: "blur(20px)",
-        overflowY: "auto", overflowX: "hidden"
+        overflowY: "auto", overflowX: "hidden",
+        boxShadow: mobileMenuOpen ? "10px 0 30px rgba(0,0,0,0.5)" : "none"
       }}>
         {/* Logo */}
         <div style={{
-          padding: "20px 16px", borderBottom: "1px solid rgba(0,212,255,0.1)",
-          display: "flex", alignItems: "center", gap: 10
+          padding: "24px 20px", borderBottom: "1px solid rgba(0,212,255,0.1)",
+          display: "flex", alignItems: "center", gap: 12
         }}>
           <div style={{
-            width: 36, height: 36, borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(0,212,255,0.3), rgba(124,58,237,0.3))",
-            border: "1px solid rgba(0,212,255,0.5)",
+            width: 40, height: 40, borderRadius: "50%",
+            background: "linear-gradient(135deg, rgba(0,212,255,0.4), rgba(124,58,237,0.4))",
+            border: "1px solid rgba(0,212,255,0.6)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 18, flexShrink: 0
+            fontSize: 20, flexShrink: 0,
+            boxShadow: "0 0 15px rgba(0,212,255,0.2)"
           }}>🤖</div>
-          {sidebarOpen && (
-            <div>
-              <div style={{ fontSize: "1rem", fontWeight: 800, color: "#00d4ff", letterSpacing: "0.1em" }}>JARVIS</div>
-              <div style={{ fontSize: "0.6rem", color: "rgba(226,232,240,0.4)", letterSpacing: "0.1em" }}>AI CONTROL</div>
+          {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && (
+            <div style={{ animation: "fadeIn 0.3s ease" }}>
+              <div style={{ fontSize: "1.1rem", fontWeight: 900, color: "#00d4ff", letterSpacing: "0.15em", textShadow: "0 0 10px rgba(0,212,255,0.3)" }}>JARVIS</div>
+              <div style={{ fontSize: "0.6rem", color: "rgba(226,232,240,0.4)", letterSpacing: "0.15em", fontWeight: 600 }}>SYSTEM CONTROL</div>
             </div>
           )}
         </div>
 
         {/* Status */}
-        {sidebarOpen && (
-          <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(0,212,255,0.07)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && (
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(0,212,255,0.07)", background: "rgba(0,212,255,0.02)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{
-                width: 8, height: 8, borderRadius: "50%",
+                width: 10, height: 10, borderRadius: "50%",
                 background: online === null ? "#f59e0b" : online ? "#10b981" : "#ef4444",
-                boxShadow: `0 0 6px ${online === null ? "#f59e0b" : online ? "#10b981" : "#ef4444"}`
-              }} className="pulse-dot" />
-              <span style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.5)" }}>
-                {online === null ? "Checking..." : online ? "System Online" : "⚠️ Offline"}
+                boxShadow: `0 0 8px ${online === null ? "#f59e0b" : online ? "#10b981" : "#ef4444"}`,
+                animation: online ? "pulse 2s infinite" : "none"
+              }} />
+              <span style={{ fontSize: "0.8rem", fontWeight: 500, color: online ? "#10b981" : online === false ? "#ef4444" : "#f59e0b" }}>
+                {online === null ? "Initializing..." : online ? "Connected" : "Disconnected"}
               </span>
-            </div>
-            <div style={{ fontSize: "0.7rem", color: "rgba(226,232,240,0.3)", marginTop: 4 }}>
-              {time.toLocaleTimeString()}
             </div>
           </div>
         )}
 
         {/* Navigation */}
-        <nav style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
+        <nav style={{ flex: 1, padding: "16px 10px", display: "flex", flexDirection: "column", gap: 4 }}>
           {NAV_ITEMS.map(item => (
             <button
               key={item.id}
               id={`nav-${item.id}`}
               className={`nav-item ${activeTab === item.id ? "active" : ""}`}
-              onClick={() => setActiveTab(item.id)}
-              style={{ width: "100%", border: "none", background: "none", textAlign: "left" }}
-              title={!sidebarOpen ? item.label : undefined}
+              onClick={() => {
+                setActiveTab(item.id);
+                if (window.innerWidth < 768) setMobileMenuOpen(false);
+              }}
+              style={{ 
+                width: "100%", border: "none", background: "none", textAlign: "left",
+                padding: "10px 14px", borderRadius: 10, display: "flex", alignItems: "center", gap: 12,
+                cursor: "pointer", transition: "all 0.2s ease"
+              }}
+              title={!sidebarOpen && window.innerWidth >= 768 ? item.label : undefined}
             >
-              <span style={{ fontSize: "1rem", flexShrink: 0 }}>{item.icon}</span>
-              {sidebarOpen && <span>{item.label}</span>}
+              <span style={{ fontSize: "1.2rem", flexShrink: 0, width: 24, textAlign: "center" }}>{item.icon}</span>
+              {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && (
+                <span style={{ fontSize: "0.9rem", fontWeight: activeTab === item.id ? 600 : 400 }}>{item.label}</span>
+              )}
             </button>
           ))}
         </nav>
 
         {/* Bottom actions */}
-        <div style={{ padding: "12px 8px", borderTop: "1px solid rgba(0,212,255,0.07)", display: "flex", flexDirection: "column", gap: 4 }}>
-          <button
-            className="nav-item"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            style={{ width: "100%", border: "none", background: "none", textAlign: "left" }}
-            title="Toggle sidebar"
-          >
-            <span>{sidebarOpen ? "◀" : "▶"}</span>
-            {sidebarOpen && <span>Collapse</span>}
-          </button>
+        <div style={{ padding: "12px 10px", borderTop: "1px solid rgba(0,212,255,0.07)", display: "flex", flexDirection: "column", gap: 4 }}>
+          {window.innerWidth >= 768 && (
+            <button
+              className="nav-item"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              style={{ width: "100%", border: "none", background: "none", textAlign: "left", padding: "10px 14px", borderRadius: 10 }}
+            >
+              <span>{sidebarOpen ? "◀" : "▶"}</span>
+              {sidebarOpen && <span style={{ marginLeft: 12 }}>Collapse</span>}
+            </button>
+          )}
           <button
             id="logout-btn"
             className="nav-item"
             onClick={handleLogout}
-            style={{ width: "100%", border: "none", background: "none", textAlign: "left", color: "rgba(239,68,68,0.7)" }}
+            style={{ 
+              width: "100%", border: "none", background: "none", textAlign: "left", 
+              color: "#ef4444", padding: "10px 14px", borderRadius: 10 
+            }}
           >
             <span>🚪</span>
-            {sidebarOpen && <span>Logout</span>}
+            {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && <span style={{ marginLeft: 12 }}>Logout</span>}
           </button>
         </div>
       </aside>
 
       {/* Main content */}
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, background: "var(--jarvis-bg)" }}>
         {/* Header */}
         <header style={{
-          padding: "14px 24px",
-          borderBottom: "1px solid rgba(0,212,255,0.1)",
-          background: "rgba(10,15,30,0.8)",
-          backdropFilter: "blur(12px)",
+          padding: "16px 24px",
+          borderBottom: "1px solid rgba(0,212,255,0.12)",
+          background: "rgba(10,15,30,0.85)",
+          backdropFilter: "blur(15px)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          position: "sticky", top: 0, zIndex: 10
+          position: "sticky", top: 0, zIndex: 80
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <h1 style={{ fontSize: "1rem", fontWeight: 700, color: "#e2e8f0" }}>
-              {NAV_ITEMS.find(n => n.id === activeTab)?.icon}{" "}
-              {NAV_ITEMS.find(n => n.id === activeTab)?.label}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {window.innerWidth < 768 && (
+              <button 
+                onClick={() => setMobileMenuOpen(true)}
+                style={{ 
+                  background: "none", border: "none", color: "#00d4ff", fontSize: "1.5rem", 
+                  cursor: "pointer", display: "flex", alignItems: "center" 
+                }}
+              >
+                ☰
+              </button>
+            )}
+            <h1 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#e2e8f0", display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: "1.3rem" }}>{NAV_ITEMS.find(n => n.id === activeTab)?.icon}</span>
+              <span style={{ display: window.innerWidth < 480 ? "none" : "inline" }}>{NAV_ITEMS.find(n => n.id === activeTab)?.label}</span>
             </h1>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span className={`badge ${online ? "badge-online" : "badge-offline"}`}>
-              <span style={{
+          
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ 
+              display: "flex", alignItems: "center", gap: 8, 
+              padding: "6px 12px", borderRadius: 20, 
+              background: online ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
+              border: `1px solid ${online ? "rgba(16,185,129,0.2)" : "rgba(239,68,68,0.2)"}`
+            }}>
+              <div style={{
                 width: 6, height: 6, borderRadius: "50%",
                 background: online ? "#10b981" : "#ef4444"
               }} />
-              {online ? "Online" : "Offline"}
-            </span>
-            <span style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", fontFamily: "monospace" }}>
-              {time.toLocaleTimeString()}
+              <span style={{ fontSize: "0.75rem", fontWeight: 600, color: online ? "#10b981" : "#ef4444" }}>
+                {online ? "ONLINE" : "OFFLINE"}
+              </span>
+            </div>
+            <span style={{ 
+              fontSize: "0.8rem", color: "rgba(226,232,240,0.5)", 
+              fontFamily: "monospace", background: "rgba(0,0,0,0.3)", 
+              padding: "4px 10px", borderRadius: 6,
+              display: window.innerWidth < 640 ? "none" : "block"
+            }}>
+              {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </span>
           </div>
         </header>
 
         {/* Page content */}
-        <div style={{ flex: 1, padding: 24, overflow: "auto" }} className="fade-in" key={activeTab}>
-          <ActiveComponent />
+        <div style={{ 
+          flex: 1, 
+          padding: window.innerWidth < 640 ? "16px" : "24px", 
+          overflowY: "auto", overflowX: "hidden",
+          maxWidth: "100%"
+        }} className="fade-in" key={activeTab}>
+          <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+            <ActiveComponent />
+          </div>
         </div>
       </main>
     </div>

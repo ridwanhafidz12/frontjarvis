@@ -29,7 +29,7 @@ export default function PrankTab() {
     setMsg(null);
     try {
       await control(action, params);
-      setMsg({ type: "ok", text: `✅ ${action} executed!` });
+      setMsg({ type: "ok", text: `✅ ${action} executed successfully!` });
     } catch (e: any) {
       setMsg({ type: "err", text: `❌ Error: ${e.message}` });
     } finally {
@@ -38,117 +38,135 @@ export default function PrankTab() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div>
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>🎭 Prank Tools</h2>
-        <p style={{ fontSize: "0.8rem", color: "rgba(226,232,240,0.4)", marginTop: 2 }}>
-          Fun remote actions on the target PC
+        <h2 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#e2e8f0" }}>🎭 Prank & Fun Tools</h2>
+        <p style={{ fontSize: "0.85rem", color: "rgba(226,232,240,0.4)", marginTop: 4 }}>
+          Remotely interact with the target computer in a fun way.
         </p>
       </div>
 
       {msg && (
-        <div style={{
-          padding: "10px 14px", borderRadius: 8, fontSize: "0.875rem",
+        <div className="fade-in" style={{
+          padding: "12px 16px", borderRadius: 10, fontSize: "0.9rem", fontWeight: 500,
           background: msg.type === "ok" ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
           border: `1px solid ${msg.type === "ok" ? "rgba(16,185,129,0.3)" : "rgba(239,68,68,0.3)"}`,
           color: msg.type === "ok" ? "#10b981" : "#ef4444"
         }}>{msg.text}</div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
         {/* TTS */}
-        <div className="jarvis-card" style={{ padding: 16 }}>
-          <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>🔊 Text to Speech</div>
-          <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 12 }}>
-            JARVIS speaks text loudly on target PC
+        <div className="jarvis-card" style={{ padding: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{ fontSize: "1.5rem" }}>🔊</span>
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: 700 }}>Text to Speech</div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)" }}>Speak text loudly</div>
+            </div>
           </div>
           <textarea className="jarvis-input" rows={2} value={ttsText}
-            onChange={e => setTtsText(e.target.value)} style={{ marginBottom: 8 }} />
-          <button className="btn-primary" style={{ width: "100%", justifyContent: "center" }}
+            onChange={e => setTtsText(e.target.value)} style={{ width: "100%", marginBottom: 12, resize: "none" }} />
+          <button className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "10px" }}
             onClick={() => run("speak", { text: ttsText })} disabled={loading}>
             🔊 Speak Now
           </button>
         </div>
 
         {/* Black Screen */}
-        <div className="jarvis-card" style={{ padding: 16 }}>
-          <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>⬛ Black Screen</div>
-          <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 12 }}>
-            Turns screen black for N seconds
+        <div className="jarvis-card" style={{ padding: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{ fontSize: "1.5rem" }}>⬛</span>
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: 700 }}>Black Screen</div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)" }}>Temporary blackout</div>
+            </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <input type="range" min={1} max={30} value={blackDuration}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+            <input type="range" min={1} max={60} value={blackDuration}
               onChange={e => setBlackDuration(parseInt(e.target.value))}
               style={{ flex: 1, accentColor: "#00d4ff" }} />
-            <span style={{ color: "#00d4ff", fontWeight: 700, width: 50 }}>{blackDuration}s</span>
+            <span style={{ color: "#00d4ff", fontWeight: 800, width: 40 }}>{blackDuration}s</span>
           </div>
-          <button className="btn-warning" style={{ width: "100%", justifyContent: "center" }}
+          <button className="btn-warning" style={{ width: "100%", justifyContent: "center", padding: "10px" }}
             onClick={() => run("blackscreen", { duration: blackDuration })} disabled={loading}>
-            ⬛ Black Screen
+            ⬛ Activate
           </button>
         </div>
 
         {/* Jumpscare */}
-        <div className="jarvis-card" style={{ padding: 16 }}>
-          <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>😱 Jumpscare</div>
-          <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 12 }}>
-            Shows scary fullscreen with alarm sound
+        <div className="jarvis-card" style={{ padding: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{ fontSize: "1.5rem" }}>😱</span>
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: 700 }}>Jumpscare</div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)" }}>Fullscreen scary alert</div>
+            </div>
           </div>
           <input className="jarvis-input" value={jumpMsg}
-            onChange={e => setJumpMsg(e.target.value)} style={{ marginBottom: 8 }} />
-          <button className="btn-danger" style={{ width: "100%", justifyContent: "center" }}
+            onChange={e => setJumpMsg(e.target.value)} style={{ width: "100%", marginBottom: 12 }} />
+          <button className="btn-danger" style={{ width: "100%", justifyContent: "center", padding: "10px" }}
             onClick={() => run("jumpscare", { message: jumpMsg })} disabled={loading}>
-            😱 Jumpscare!
+            😱 Send Jumpscare
           </button>
         </div>
 
         {/* Fake BSOD */}
-        <div className="jarvis-card" style={{ padding: 16, border: "1px solid rgba(239,68,68,0.2)" }}>
-          <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>💀 Fake BSOD</div>
-          <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 12 }}>
-            Fake Windows Blue Screen of Death
+        <div className="jarvis-card" style={{ padding: 20, border: "1px solid rgba(239,68,68,0.2)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{ fontSize: "1.5rem" }}>💀</span>
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: 700, color: "#ef4444" }}>Fake BSOD</div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)" }}>Simulate system crash</div>
+            </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: "0.8rem", color: "rgba(226,232,240,0.5)" }}>Duration:</span>
-            <input type="range" min={2} max={30} value={bsodDuration}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+            <input type="range" min={2} max={60} value={bsodDuration}
               onChange={e => setBsodDuration(parseInt(e.target.value))}
               style={{ flex: 1, accentColor: "#ef4444" }} />
-            <span style={{ color: "#ef4444", fontWeight: 700, width: 50 }}>{bsodDuration}s</span>
+            <span style={{ color: "#ef4444", fontWeight: 800, width: 40 }}>{bsodDuration}s</span>
           </div>
-          <button className="btn-danger" style={{ width: "100%", justifyContent: "center" }}
-            onClick={() => { if (confirm("Show Fake BSOD?")) run("bsod", { duration: bsodDuration }); }}
+          <button className="btn-danger" style={{ width: "100%", justifyContent: "center", padding: "10px" }}
+            onClick={() => { if (confirm("Show Fake BSOD? This will block the user's screen temporarily.")) run("bsod", { duration: bsodDuration }); }}
             disabled={loading}>
-            💀 Fake BSOD
+            💀 Show BSOD
           </button>
         </div>
 
         {/* Custom Popup */}
-        <div className="jarvis-card" style={{ padding: 16 }}>
-          <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>💬 Custom Popup</div>
-          <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 12 }}>
-            Show a Windows dialog box
+        <div className="jarvis-card" style={{ padding: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{ fontSize: "1.5rem" }}>💬</span>
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: 700 }}>Custom Popup</div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)" }}>Show Windows dialog</div>
+            </div>
           </div>
           <input className="jarvis-input" value={popupTitle} onChange={e => setPopupTitle(e.target.value)}
-            placeholder="Title" style={{ marginBottom: 6 }} />
+            placeholder="Title" style={{ width: "100%", marginBottom: 8 }} />
           <textarea className="jarvis-input" rows={2} value={popupMsg}
-            onChange={e => setPopupMsg(e.target.value)} placeholder="Message" style={{ marginBottom: 8 }} />
-          <button className="btn-primary" style={{ width: "100%", justifyContent: "center" }}
+            onChange={e => setPopupMsg(e.target.value)} placeholder="Message" style={{ width: "100%", marginBottom: 12, resize: "none" }} />
+          <button className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "10px" }}
             onClick={() => run("popup", { title: popupTitle, message: popupMsg })} disabled={loading}>
             💬 Show Popup
           </button>
         </div>
 
         {/* Sound effects */}
-        <div className="jarvis-card" style={{ padding: 16 }}>
-          <div style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>🔔 Sound Effects</div>
-          <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 12 }}>
-            Play system sounds
+        <div className="jarvis-card" style={{ padding: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{ fontSize: "1.5rem" }}>🔔</span>
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: 700 }}>Sound Effects</div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)" }}>Play system alerts</div>
+            </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {["beep", "error", "critical"].map(s => (
-              <button key={s} className="btn-primary" onClick={() => run("play_sound", { type: s })}
-                disabled={loading} style={{ justifyContent: "center" }}>
-                🔔 {s.charAt(0).toUpperCase() + s.slice(1)}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {["beep", "error", "critical", "success"].map(s => (
+              <button key={s} className={s === "error" || s === "critical" ? "btn-danger" : "btn-primary"} 
+                onClick={() => run("play_sound", { type: s })}
+                disabled={loading} style={{ justifyContent: "center", textTransform: "capitalize" }}>
+                {s}
               </button>
             ))}
           </div>
