@@ -35,14 +35,18 @@ export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [time, setTime] = useState(new Date());
+  const [windowWidth, setWindowWidth] = useState(0);
 
-  // Auth check
+  // Auth check & window initialization
   useEffect(() => {
     const base = getApiBase();
     const token = getToken();
     if (!base || !token) {
       router.replace("/");
     }
+    
+    // Set initial window width
+    setWindowWidth(window.innerWidth);
     
     // Auto-close sidebar on small screens
     if (window.innerWidth < 1024) {
@@ -53,6 +57,7 @@ export default function DashboardPage() {
   // Handle resize
   useEffect(() => {
     const handleResize = () => {
+      setWindowWidth(window.innerWidth);
       if (window.innerWidth < 1024) {
         setSidebarOpen(false);
       } else {
@@ -107,16 +112,16 @@ export default function DashboardPage() {
 
       {/* Sidebar */}
       <aside style={{
-        width: sidebarOpen ? 240 : (window.innerWidth < 768 ? 0 : 70),
+        width: sidebarOpen ? 240 : (windowWidth < 768 ? 0 : 70),
         minHeight: "100vh",
         background: "rgba(10,15,30,0.98)",
         borderRight: "1px solid rgba(0,212,255,0.15)",
         display: "flex", flexDirection: "column",
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         flexShrink: 0,
-        position: window.innerWidth < 768 ? "fixed" : "sticky", 
+        position: windowWidth < 768 ? "fixed" : "sticky", 
         top: 0, height: "100vh",
-        left: window.innerWidth < 768 && !mobileMenuOpen ? -240 : 0,
+        left: windowWidth < 768 && !mobileMenuOpen ? -240 : 0,
         zIndex: 100,
         backdropFilter: "blur(20px)",
         overflowY: "auto", overflowX: "hidden",
@@ -135,7 +140,7 @@ export default function DashboardPage() {
             fontSize: 20, flexShrink: 0,
             boxShadow: "0 0 15px rgba(0,212,255,0.2)"
           }}>🤖</div>
-          {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && (
+          {(sidebarOpen || (windowWidth < 768 && mobileMenuOpen)) && (
             <div style={{ animation: "fadeIn 0.3s ease" }}>
               <div style={{ fontSize: "1.1rem", fontWeight: 900, color: "#00d4ff", letterSpacing: "0.15em", textShadow: "0 0 10px rgba(0,212,255,0.3)" }}>JARVIS</div>
               <div style={{ fontSize: "0.6rem", color: "rgba(226,232,240,0.4)", letterSpacing: "0.15em", fontWeight: 600 }}>SYSTEM CONTROL</div>
@@ -144,7 +149,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Status */}
-        {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && (
+        {(sidebarOpen || (windowWidth < 768 && mobileMenuOpen)) && (
           <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(0,212,255,0.07)", background: "rgba(0,212,255,0.02)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{
@@ -169,17 +174,17 @@ export default function DashboardPage() {
               className={`nav-item ${activeTab === item.id ? "active" : ""}`}
               onClick={() => {
                 setActiveTab(item.id);
-                if (window.innerWidth < 768) setMobileMenuOpen(false);
+                if (windowWidth < 768) setMobileMenuOpen(false);
               }}
               style={{ 
                 width: "100%", border: "none", background: "none", textAlign: "left",
                 padding: "10px 14px", borderRadius: 10, display: "flex", alignItems: "center", gap: 12,
                 cursor: "pointer", transition: "all 0.2s ease"
               }}
-              title={!sidebarOpen && window.innerWidth >= 768 ? item.label : undefined}
+              title={!sidebarOpen && windowWidth >= 768 ? item.label : undefined}
             >
               <span style={{ fontSize: "1.2rem", flexShrink: 0, width: 24, textAlign: "center" }}>{item.icon}</span>
-              {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && (
+              {(sidebarOpen || (windowWidth < 768 && mobileMenuOpen)) && (
                 <span style={{ fontSize: "0.9rem", fontWeight: activeTab === item.id ? 600 : 400 }}>{item.label}</span>
               )}
             </button>
@@ -188,7 +193,7 @@ export default function DashboardPage() {
 
         {/* Bottom actions */}
         <div style={{ padding: "12px 10px", borderTop: "1px solid rgba(0,212,255,0.07)", display: "flex", flexDirection: "column", gap: 4 }}>
-          {window.innerWidth >= 768 && (
+          {windowWidth >= 768 && (
             <button
               className="nav-item"
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -208,7 +213,7 @@ export default function DashboardPage() {
             }}
           >
             <span>🚪</span>
-            {(sidebarOpen || (window.innerWidth < 768 && mobileMenuOpen)) && <span style={{ marginLeft: 12 }}>Logout</span>}
+            {(sidebarOpen || (windowWidth < 768 && mobileMenuOpen)) && <span style={{ marginLeft: 12 }}>Logout</span>}
           </button>
         </div>
       </aside>
@@ -225,7 +230,7 @@ export default function DashboardPage() {
           position: "sticky", top: 0, zIndex: 80
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            {window.innerWidth < 768 && (
+            {windowWidth < 768 && (
               <button 
                 onClick={() => setMobileMenuOpen(true)}
                 style={{ 
@@ -238,7 +243,7 @@ export default function DashboardPage() {
             )}
             <h1 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#e2e8f0", display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ fontSize: "1.3rem" }}>{NAV_ITEMS.find(n => n.id === activeTab)?.icon}</span>
-              <span style={{ display: window.innerWidth < 480 ? "none" : "inline" }}>{NAV_ITEMS.find(n => n.id === activeTab)?.label}</span>
+              <span style={{ display: windowWidth < 480 ? "none" : "inline" }}>{NAV_ITEMS.find(n => n.id === activeTab)?.label}</span>
             </h1>
           </div>
           
@@ -261,7 +266,7 @@ export default function DashboardPage() {
               fontSize: "0.8rem", color: "rgba(226,232,240,0.5)", 
               fontFamily: "monospace", background: "rgba(0,0,0,0.3)", 
               padding: "4px 10px", borderRadius: 6,
-              display: window.innerWidth < 640 ? "none" : "block"
+              display: windowWidth < 640 ? "none" : "block"
             }}>
               {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </span>
@@ -271,7 +276,7 @@ export default function DashboardPage() {
         {/* Page content */}
         <div style={{ 
           flex: 1, 
-          padding: window.innerWidth < 640 ? "16px" : "24px", 
+          padding: windowWidth < 640 ? "16px" : "24px", 
           overflowY: "auto", overflowX: "hidden",
           maxWidth: "100%"
         }} className="fade-in" key={activeTab}>
