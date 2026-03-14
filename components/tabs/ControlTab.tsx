@@ -10,6 +10,8 @@ export default function ControlTab() {
   const [imgLabel, setImgLabel] = useState("");
   const [volume, setVolume] = useState(50);
   const [appName, setAppName] = useState("notepad");
+  const [closeTarget, setCloseTarget] = useState("");
+  const [closeTabTarget, setCloseTabTarget] = useState("");
   const [shutdownDelay, setShutdownDelay] = useState(0);
   const [recordDuration, setRecordDuration] = useState(10);
   const [loading, setLoading] = useState<string | null>(null);
@@ -73,21 +75,49 @@ export default function ControlTab() {
           )}
         </Section>
 
-        {/* Apps */}
-        <Section title="🚀 Application Launcher">
-          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            <input className="jarvis-input" style={{ flex: 1 }} value={appName}
-              onChange={e => setAppName(e.target.value)} placeholder="Enter process name..." />
-            <Btn label="▶ Launch" cls="btn-primary" loading={loading}
-              onClick={() => run(`Launch ${appName}`, () => control("open_app", { app: appName }))} />
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {["notepad", "calc", "chrome", "firefox", "explorer", "taskmgr", "cmd", "powershell"].map(a => (
-              <button key={a} className="btn-primary" style={{ fontSize: "0.7rem", padding: "4px 10px", borderRadius: 6 }}
-                onClick={() => { setAppName(a); run(`Open ${a}`, () => control("open_app", { app: a })); }}>
-                {a}
-              </button>
-            ))}
+        {/* Apps & Windows */}
+        <Section title="🚀 Apps & Windows">
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Launch App */}
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 6, fontWeight: 700 }}>LAUNCH APPLICATION</div>
+              <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                <input className="jarvis-input" style={{ flex: 1 }} value={appName}
+                  onChange={e => setAppName(e.target.value)} placeholder="Enter process name..." />
+                <Btn label="▶ Launch" cls="btn-primary" loading={loading}
+                  onClick={() => run(`Launch ${appName}`, () => control("open_app", { app: appName }))} />
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {["notepad", "calc", "chrome", "firefox", "explorer", "taskmgr", "cmd", "powershell"].map(a => (
+                  <button key={a} className="btn-primary" style={{ fontSize: "0.7rem", padding: "4px 10px", borderRadius: 6 }}
+                    onClick={() => { setAppName(a); run(`Open ${a}`, () => control("open_app", { app: a })); }}>
+                    {a}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Close App */}
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 6, fontWeight: 700 }}>CLOSE PROCESS</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input className="jarvis-input" style={{ flex: 1 }} value={closeTarget}
+                  onChange={e => setCloseTarget(e.target.value)} placeholder="Process name (e.g. notepad.exe)..." />
+                <Btn label="✕ Close App" cls="btn-danger" loading={loading}
+                  onClick={() => run(`Close ${closeTarget}`, () => control("close_app", { app: closeTarget }))} />
+              </div>
+            </div>
+
+            {/* Close Tab */}
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", marginBottom: 6, fontWeight: 700 }}>CLOSE BROWSER TAB</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input className="jarvis-input" style={{ flex: 1 }} value={closeTabTarget}
+                  onChange={e => setCloseTabTarget(e.target.value)} placeholder="Domain or Keyword (e.g. youtube)..." />
+                <Btn label="✕ Close Tab" cls="btn-danger" loading={loading}
+                  onClick={() => run(`Close Tab ${closeTabTarget}`, () => control("close_tab", { target: closeTabTarget }))} />
+              </div>
+            </div>
           </div>
         </Section>
 
@@ -117,6 +147,8 @@ export default function ControlTab() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
             <Btn label="🔒 Lock PC" cls="btn-warning" loading={loading}
               onClick={() => run("Lock", () => control("lock"))} />
+            <Btn label="🌙 Sleep Display" cls="btn-primary" loading={loading}
+              onClick={() => run("Sleep Display", () => control("sleep_display"))} />
             <Btn label="⛔ Cancel Cmd" cls="btn-primary" loading={loading}
               onClick={() => run("Cancel", () => control("cancel_shutdown"))} />
           </div>

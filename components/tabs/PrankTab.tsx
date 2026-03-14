@@ -18,8 +18,8 @@ export default function PrankTab() {
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [ttsText, setTtsText] = useState("Hello from JARVIS!");
-  const [bsodDuration, setBsodDuration] = useState(5);
-  const [blackDuration, setBlackDuration] = useState(5);
+  const [bsodDuration, setBsodDuration] = useState(10);
+  const [blackDuration, setBlackDuration] = useState(10);
   const [jumpMsg, setJumpMsg] = useState("BOO! 😱");
   const [popupTitle, setPopupTitle] = useState("JARVIS");
   const [popupMsg, setPopupMsg] = useState("This is a test message from JARVIS!");
