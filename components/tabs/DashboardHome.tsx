@@ -14,6 +14,14 @@ interface SystemStatus {
   battery_plugged?: boolean;
   local_ip?: string;
   public_ip?: string;
+  location?: {
+    city?: string;
+    country?: string;
+    regionName?: string;
+    isp?: string;
+    lat?: number;
+    lon?: number;
+  };
 }
 
 export default function DashboardHome() {
@@ -127,6 +135,14 @@ export default function DashboardHome() {
             percent={status.battery_percent} />
           <StatCard icon="🏠" label="Local IP" value={status.local_ip ?? "Unknown"} />
           <StatCard icon="🌍" label="Public IP" value={status.public_ip ?? "Unknown"} />
+          {status.location && (
+            <StatCard 
+              icon="📍" 
+              label="Location" 
+              value={`${status.location.city ?? ""}, ${status.location.country ?? ""}`} 
+              sub={`${status.location.regionName ?? ""} · ${status.location.isp ?? ""}`}
+            />
+          )}
         </div>
       )}
 

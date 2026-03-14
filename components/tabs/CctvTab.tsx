@@ -8,9 +8,9 @@ export default function CctvTab() {
   const base = typeof window !== "undefined" ? getApiBase() : "";
   const token = typeof window !== "undefined" ? getToken() : "";
 
-  // The stream URLs (token passed via query for img src)
-  const cctvUrl = `${base}/cctv?auth=${token}`;
-  const screenUrl = `${base}/stream?auth=${token}`;
+  // The stream URLs
+  const cctvUrl = `${base}/cctv?token=${token}`;
+  const screenUrl = `${base}/stream?token=${token}`;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
