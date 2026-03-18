@@ -18,7 +18,7 @@ import LogsTab       from "@/components/tabs/LogsTab";
 
 type TabId =
   | "home" | "control" | "terminal" | "files"
-  | "ai" | "cctv" | "keylogger" | "prank" | "config" | "logs";
+  | "ai" | "cctv" | "keylogger" | "prank" | "config" | "logs" | "vault";
 
 interface NavItem {
   id:        TabId;
@@ -40,6 +40,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "prank",     icon: "🎭", label: "Prank",       component: PrankTab     },
   { id: "config",    icon: "⚙️", label: "Config",      component: ConfigTab    },
   { id: "logs",      icon: "📋", label: "Logs",        component: LogsTab      },
+  { id: "vault",     icon: "🔐", label: "Vault",       component: VaultTab     },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -129,6 +130,8 @@ function NavButton({
 export default function DashboardPage() {
   const router   = useRouter();
   const winW     = useWindowWidth();
+  // winW === 0 saat SSR / sebelum hydration — treat as desktop agar tidak flicker
+  // Setelah mount, nilai aktual akan dipakai
   const isMobile = winW > 0 && winW < 768;
   const isTablet = winW >= 768 && winW < 1024;
 
@@ -149,9 +152,18 @@ export default function DashboardPage() {
   // ── Responsive sidebar defaults ─────────────────────────────────────────
   useEffect(() => {
     if (winW === 0) return;
-    if (winW < 1024) setSidebarOpen(false);
-    else             setSidebarOpen(true);
-  }, [winW < 1024]);                     // only react to breakpoint crossing
+    if (winW < 768) {
+      // Mobile: sidebar selalu jadi drawer, pastikan tertutup saat pertama load
+      setSidebarOpen(false);
+      setMobileDrawer(false);
+    } else if (winW < 1024) {
+      setSidebarOpen(false);
+      setMobileDrawer(false);
+    } else {
+      setSidebarOpen(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [winW === 0, winW < 768, winW < 1024]); // react to breakpoint crossing only
 
   // ── Clock ───────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -212,16 +224,21 @@ export default function DashboardPage() {
         display: "flex", minHeight: "100vh",
         background: "var(--jarvis-bg, #050a18)",
         color: "#e2e8f0", fontFamily: "'Segoe UI', system-ui, sans-serif",
-        position: "relative", overflow: "hidden",
+        position: "relative",
+        // ❌ overflow: "hidden" dihapus — memblokir position:fixed sidebar di mobile
       }}>
 
         {/* ── Mobile drawer backdrop ──────────────────────────────────── */}
-        {isMobile && mobileDrawer && (
+        {mobileDrawer && (
           <div
             onClick={() => setMobileDrawer(false)}
             style={{
-              position: "fixed", inset: 0, zIndex: 120,
-              background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+              position: "fixed", inset: 0,
+              zIndex: 120,  // di bawah sidebar (130) tapi di atas konten (80)
+              background: "rgba(0,0,0,0.6)",
+              backdropFilter: "blur(4px)",
+              // Hanya tampil di mobile — di desktop tidak perlu
+              display: isMobile ? "block" : "none",
             }}
           />
         )}
@@ -241,14 +258,20 @@ export default function DashboardPage() {
           overflowX:  "hidden", overflowY: "auto",
           // Mobile: fixed drawer
           ...(isMobile ? {
-            position: "fixed", top: 0, left: 0, height: "100vh",
-            zIndex:    130,
-            transform: mobileDrawer ? "translateX(0)" : "translateX(-100%)",
+            position:   "fixed" as const,
+            top:        0,
+            left:       0,
+            height:     "100vh",
+            zIndex:     130,
+            width:      260,
+            // Gunakan transform saja — jangan campur animation + transform
+            transform:  mobileDrawer ? "translateX(0)" : "translateX(-100%)",
             transition: "transform 0.28s cubic-bezier(.4,0,.2,1)",
-            animation: mobileDrawer ? "pg-slidein 0.28s ease both" : undefined,
-            boxShadow: mobileDrawer ? "4px 0 32px rgba(0,0,0,0.6)" : "none",
+            boxShadow:  mobileDrawer ? "4px 0 32px rgba(0,0,0,0.6)" : "none",
           } : {
-            position: "sticky", top: 0, height: "100vh",
+            position: "sticky" as const,
+            top:      0,
+            height:   "100vh",
           }),
         }}>
 
@@ -401,17 +424,20 @@ export default function DashboardPage() {
             gap: 12,
           }}>
 
-            {/* Left: hamburger (mobile) + page title */}
+            {/* Left: hamburger (mobile+tablet < 1024px) + page title */}
             <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
-              {isMobile && (
+              {winW > 0 && winW < 1024 && (
                 <button
-                  onClick={() => setMobileDrawer(true)}
+                  onClick={() => setMobileDrawer(v => !v)}
+                  aria-label="Toggle menu"
                   style={{
-                    background: "none", border: "none",
+                    background: mobileDrawer ? "rgba(0,212,255,0.1)" : "none",
+                    border: mobileDrawer ? "1px solid rgba(0,212,255,0.2)" : "none",
+                    borderRadius: 6,
                     color: "#00d4ff", fontSize: "1.4rem",
                     cursor: "pointer", flexShrink: 0,
                     display: "flex", alignItems: "center",
-                    padding: 4,
+                    padding: "2px 6px", lineHeight: 1,
                   }}
                 >☰</button>
               )}
