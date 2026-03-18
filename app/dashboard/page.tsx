@@ -41,7 +41,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "prank",     icon: "🎭", label: "Prank",       component: PrankTab     },
   { id: "config",    icon: "⚙️", label: "Config",      component: ConfigTab    },
   { id: "logs",      icon: "📋", label: "Logs",        component: LogsTab      },
-  { id: "vault",     icon: "🔐", label: "Vault",       component: VaultTab     },
+// { id: "vault", icon: "🔐", label: "Vault", component: VaultTab },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────
