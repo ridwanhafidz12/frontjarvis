@@ -235,60 +235,78 @@ export default function DashboardPage() {
             top:        0,
             left:       0,
             height:     "100vh",
-            width:      260,
+            width:      280,
             zIndex:     130,
             transform:  mobileDrawer ? "translateX(0)" : "translateX(-100%)",
-            transition: "transform 0.28s cubic-bezier(.4,0,.2,1)",
-            boxShadow:  mobileDrawer ? "4px 0 32px rgba(0,0,0,0.6)" : "none",
+            transition: "transform 0.3s cubic-bezier(.4,0,.2,1)",
+            boxShadow:  mobileDrawer ? "0 0 50px rgba(0,0,0,0.8)" : "none",
           } : {
             position:   "sticky" as const,
             top:        0,
             height:     "100vh",
             width:      sidebarW,
-            transition: "width 0.28s cubic-bezier(.4,0,.2,1)",
+            transition: "width 0.3s cubic-bezier(.4,0,.2,1)",
           }),
           flexShrink:    0,
           display:       "flex",
           flexDirection: "column",
-          background:    "rgba(8,12,26,0.98)",
-          borderRight:   "1px solid rgba(0,212,255,0.12)",
-          backdropFilter:"blur(20px)",
+          background:    "rgba(10, 15, 30, 0.95)",
+          borderRight:   "1px solid rgba(0,212,255,0.15)",
+          backdropFilter:"blur(24px)",
           overflowX:     "hidden",
           overflowY:     "auto",
         }}>
 
-          {/* Logo */}
+          {/* Logo & Close (Mobile) */}
           <div style={{
             padding: collapsed ? "22px 0" : "22px 18px",
             borderBottom: "1px solid rgba(0,212,255,0.1)",
             display: "flex", alignItems: "center",
-            justifyContent: collapsed ? "center" : "flex-start",
+            justifyContent: "space-between",
             gap: 12, flexShrink: 0,
           }}>
             <div style={{
-              width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
-              background: "linear-gradient(135deg,rgba(0,212,255,0.35),rgba(124,58,237,0.35))",
-              border: "1px solid rgba(0,212,255,0.5)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 18, boxShadow: "0 0 14px rgba(0,212,255,0.18)",
+              display: "flex", alignItems: "center", gap: 12,
+              justifyContent: collapsed ? "center" : "flex-start",
+              flex: 1
             }}>
-              🤖
-            </div>
-            {!collapsed && (
-              <div style={{ animation: "pg-fadein 0.2s ease both" }}>
-                <div style={{
-                  fontSize: "1.05rem", fontWeight: 900, color: "#00d4ff",
-                  letterSpacing: "0.18em",
-                }}>
-                  JARVIS
-                </div>
-                <div style={{
-                  fontSize: "0.56rem", color: "rgba(226,232,240,0.35)",
-                  letterSpacing: "0.18em", textTransform: "uppercase",
-                }}>
-                  System Control
-                </div>
+              <div style={{
+                width: 38, height: 38, borderRadius: "10px", flexShrink: 0,
+                background: "linear-gradient(135deg,rgba(0,212,255,0.35),rgba(124,58,237,0.35))",
+                border: "1px solid rgba(0,212,255,0.5)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 18, boxShadow: "0 0 14px rgba(0,212,255,0.18)",
+              }}>
+                🤖
               </div>
+              {!collapsed && (
+                <div style={{ animation: "pg-fadein 0.2s ease both" }}>
+                  <div style={{
+                    fontSize: "1.05rem", fontWeight: 900, color: "#00d4ff",
+                    letterSpacing: "0.18em",
+                  }}>
+                    JARVIS
+                  </div>
+                  <div style={{
+                    fontSize: "0.56rem", color: "rgba(226,232,240,0.35)",
+                    letterSpacing: "0.18em", textTransform: "uppercase",
+                  }}>
+                    System Control
+                  </div>
+                </div>
+              )}
+            </div>
+            {isMobile && mobileDrawer && (
+              <button
+                onClick={() => setMobileDrawer(false)}
+                style={{
+                  background: "rgba(255,255,255,0.05)", border: "none",
+                  borderRadius: "50%", width: 32, height: 32, color: "#e2e8f0",
+                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center"
+                }}
+              >
+                ✕
+              </button>
             )}
           </div>
 
@@ -397,44 +415,46 @@ export default function DashboardPage() {
 
           {/* Header */}
           <header style={{
-            padding: "0 20px", height: 58, flexShrink: 0,
+            padding: isMobile ? "0 12px" : "0 20px",
+            height: isMobile ? 52 : 58,
+            flexShrink: 0,
             borderBottom: "1px solid rgba(0,212,255,0.1)",
-            background: "rgba(8,12,26,0.88)",
-            backdropFilter: "blur(16px)",
+            background: "rgba(10, 15, 30, 0.8)",
+            backdropFilter: "blur(20px)",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             position: "sticky", top: 0, zIndex: 80, gap: 12,
           }}>
 
             {/* Left */}
-            <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
-              {/* Hamburger — tampil di semua layar < 1024px */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+              {/* Hamburger */}
               {winW > 0 && winW < 1024 && (
                 <button
                   onClick={() => setMobileDrawer(v => !v)}
                   aria-label="Toggle menu"
                   style={{
-                    background: mobileDrawer ? "rgba(0,212,255,0.1)" : "none",
-                    border: mobileDrawer ? "1px solid rgba(0,212,255,0.2)" : "none",
-                    borderRadius: 6, color: "#00d4ff", fontSize: "1.4rem",
+                    background: "rgba(0,212,255,0.08)",
+                    border: "1px solid rgba(0,212,255,0.2)",
+                    borderRadius: 8, color: "#00d4ff", fontSize: "1.2rem",
                     cursor: "pointer", flexShrink: 0,
-                    display: "flex", alignItems: "center",
-                    padding: "2px 6px", lineHeight: "1",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: 36, height: 36, padding: 0,
                   }}
                 >
-                  ☰
+                  {mobileDrawer ? "✕" : "☰"}
                 </button>
               )}
               <h1 style={{
-                display: "flex", alignItems: "center", gap: 10,
-                fontSize: "0.98rem", fontWeight: 700, color: "#e2e8f0",
+                display: "flex", alignItems: "center", gap: 8,
+                fontSize: isMobile ? "0.9rem" : "0.98rem",
+                fontWeight: 700, color: "#e2e8f0",
                 margin: 0, minWidth: 0,
               }}>
-                <span style={{ fontSize: "1.2rem", flexShrink: 0 }}>
+                <span style={{ fontSize: isMobile ? "1.1rem" : "1.2rem", flexShrink: 0 }}>
                   {activeItem.icon}
                 </span>
                 <span style={{
                   whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                  display: winW < 400 ? "none" : "inline",
                 }}>
                   {activeItem.label}
                 </span>
@@ -442,10 +462,11 @@ export default function DashboardPage() {
             </div>
 
             {/* Right */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
               <div style={{
-                display: "flex", alignItems: "center", gap: 7,
-                padding: "5px 11px", borderRadius: 20,
+                display: "flex", alignItems: "center", gap: 6,
+                padding: isMobile ? "4px 8px" : "5px 11px",
+                borderRadius: 20,
                 background: online ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
                 border: `1px solid ${online ? "rgba(16,185,129,0.2)" : "rgba(239,68,68,0.2)"}`,
               }}>
@@ -455,17 +476,17 @@ export default function DashboardPage() {
                   flexShrink: 0,
                 }} />
                 <span style={{
-                  fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.06em",
+                  fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.06em",
                   color: online ? "#10b981" : "#ef4444",
-                  display: winW < 480 ? "none" : "inline",
+                  display: winW < 360 ? "none" : "inline",
                 }}>
                   {online ? "ONLINE" : "OFFLINE"}
                 </span>
               </div>
-              {winW >= 560 && (
+              {winW >= 640 && (
                 <span style={{
                   fontSize: "0.78rem", color: "rgba(226,232,240,0.45)",
-                  fontFamily: "'JetBrains Mono','Courier New',monospace",
+                  fontFamily: "'JetBrains Mono',monospace",
                   background: "rgba(0,0,0,0.3)", padding: "4px 10px", borderRadius: 6,
                 }}>
                   {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}

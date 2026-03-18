@@ -79,91 +79,113 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ position: "relative", zIndex: 1 }}>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ position: "relative", zIndex: 1, background: "radial-gradient(circle at center, #0a0f1e 0%, #020408 100%)" }}>
       {/* Background glow orbs */}
       <div style={{
-        position: "fixed", top: "20%", left: "15%", width: 400, height: 400,
-        background: "radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%)",
-        pointerEvents: "none"
+        position: "fixed", top: "10%", left: "10%", width: "40vw", height: "40vw",
+        background: "radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)",
+        pointerEvents: "none", zIndex: -1
       }} />
       <div style={{
-        position: "fixed", bottom: "20%", right: "15%", width: 300, height: 300,
-        background: "radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%)",
-        pointerEvents: "none"
+        position: "fixed", bottom: "10%", right: "10%", width: "35vw", height: "35vw",
+        background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
+        pointerEvents: "none", zIndex: -1
       }} />
 
       <div className="w-full max-w-md fade-in">
         {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            width: 80, height: 80, borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2))",
-            border: "2px solid rgba(0,212,255,0.4)",
-            marginBottom: 16,
-            boxShadow: "0 0 30px rgba(0,212,255,0.2)"
+            width: 90, height: 90, borderRadius: "24px",
+            background: "linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.1))",
+            border: "1px solid rgba(0,212,255,0.3)",
+            marginBottom: 20,
+            boxShadow: "0 0 40px rgba(0,212,255,0.15)",
+            transform: "rotate(-5deg)"
           }}>
-            <span style={{ fontSize: 32 }}>🤖</span>
+            <span style={{ fontSize: 40 }}>🤖</span>
           </div>
           <h1 style={{
-            fontSize: "2rem", fontWeight: 800, letterSpacing: "0.1em",
-            background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+            fontSize: "2.5rem", fontWeight: 900, letterSpacing: "0.15em",
+            background: "linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            marginBottom: 4
+            marginBottom: 8, filter: "drop-shadow(0 0 10px rgba(0,212,255,0.3))"
           }}>JARVIS</h1>
-          <p style={{ color: "rgba(226,232,240,0.5)", fontSize: "0.875rem", letterSpacing: "0.15em" }}>
-            PORTABLE AI CONTROL SYSTEM
-          </p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <div style={{ height: 1, width: 20, background: "rgba(0,212,255,0.3)" }} />
+            <p style={{ color: "rgba(226,232,240,0.4)", fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase" }}>
+              AI Control System
+            </p>
+            <div style={{ height: 1, width: 20, background: "rgba(0,212,255,0.3)" }} />
+          </div>
         </div>
 
         {/* Login card */}
         <div className="glass" style={{
-          borderRadius: 16, padding: 32,
-          boxShadow: "0 0 40px rgba(0,212,255,0.08), 0 25px 50px rgba(0,0,0,0.5)"
+          borderRadius: 24, padding: "40px 32px",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05)",
+          position: "relative", overflow: "hidden"
         }}>
-          <h2 style={{ fontSize: "1.1rem", fontWeight: 600, color: "#e2e8f0", marginBottom: 24 }}>
-            🔐 Authentication
+          {/* Decorative corner accent */}
+          <div style={{
+            position: "absolute", top: 0, right: 0, width: 60, height: 60,
+            background: "linear-gradient(225deg, rgba(0,212,255,0.2) 0%, transparent 70%)",
+            pointerEvents: "none"
+          }} />
+
+          <h2 style={{ fontSize: "1.25rem", fontWeight: 700, color: "#fff", marginBottom: 32, display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ color: "#00d4ff" }}>🔐</span> Secure Login
           </h2>
 
           {error && (
             <div style={{
               background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)",
-              borderRadius: 8, padding: "10px 14px", marginBottom: 16,
-              color: "#ef4444", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: 8
+              borderRadius: 12, padding: "12px 16px", marginBottom: 24,
+              color: "#ef4444", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: 10,
+              animation: "shake 0.5s cubic-bezier(.36,.07,.19,.97) both"
             }}>
-              ⚠️ {error}
+              <span>⚠️</span> {error}
             </div>
           )}
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div>
-              <label style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.5)", marginBottom: 6, display: "block", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                API URL (Cloudflare Tunnel)
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div className="input-group">
+              <label style={{ fontSize: "0.7rem", color: "rgba(226,232,240,0.5)", marginBottom: 8, display: "block", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>
+                API Endpoint
               </label>
-              <input
-                id="api-url-input"
-                className="jarvis-input"
-                type="text"
-                placeholder="https://xxxx.trycloudflare.com"
-                value={apiUrl}
-                onChange={e => setApiUrl(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleLogin()}
-              />
+              <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "rgba(0,212,255,0.5)", fontSize: "1rem" }}>🔗</span>
+                <input
+                  id="api-url-input"
+                  className="jarvis-input"
+                  type="text"
+                  placeholder="https://xxxx.trycloudflare.com"
+                  value={apiUrl}
+                  onChange={e => setApiUrl(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLogin()}
+                  style={{ paddingLeft: 40, height: 48, background: "rgba(0,0,0,0.2)" }}
+                />
+              </div>
             </div>
 
-            <div>
-              <label style={{ fontSize: "0.75rem", color: "rgba(226,232,240,0.5)", marginBottom: 6, display: "block", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Dashboard Password
+            <div className="input-group">
+              <label style={{ fontSize: "0.7rem", color: "rgba(226,232,240,0.5)", marginBottom: 8, display: "block", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>
+                Access Key
               </label>
-              <input
-                id="password-input"
-                className="jarvis-input"
-                type="password"
-                placeholder="jarvis123"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleLogin()}
-              />
+              <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "rgba(0,212,255,0.5)", fontSize: "1rem" }}>🔑</span>
+                <input
+                  id="password-input"
+                  className="jarvis-input"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLogin()}
+                  style={{ paddingLeft: 40, height: 48, background: "rgba(0,0,0,0.2)" }}
+                />
+              </div>
             </div>
 
             <button
@@ -172,39 +194,50 @@ export default function HomePage() {
               onClick={() => handleLogin()}
               disabled={loading}
               style={{
-                width: "100%", justifyContent: "center", padding: "12px",
-                fontSize: "1rem", fontWeight: 600, marginTop: 8,
-                opacity: loading ? 0.7 : 1
+                width: "100%", justifyContent: "center", padding: "14px",
+                fontSize: "1rem", fontWeight: 700, marginTop: 8,
+                opacity: loading ? 0.7 : 1, borderRadius: 12,
+                background: "linear-gradient(135deg, #00d4ff 0%, #0088ff 100%)",
+                color: "#000", border: "none", boxShadow: "0 10px 20px rgba(0,212,255,0.2)"
               }}
             >
               {loading ? (
-                <><div className="spinner" style={{ width: 18, height: 18 }} /> Connecting...</>
+                <><div className="spinner" style={{ width: 18, height: 18, borderTopColor: "#000" }} /> Connecting...</>
               ) : (
-                <> <span>⚡</span> Connect to JARVIS</>
+                <>Establish Connection ⚡</>
               )}
             </button>
           </div>
 
           <div style={{
-            marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(0,212,255,0.1)",
-            fontSize: "0.75rem", color: "rgba(226,232,240,0.4)", textAlign: "center"
+            marginTop: 32, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.05)",
+            fontSize: "0.75rem", color: "rgba(226,232,240,0.3)", textAlign: "center", lineHeight: 1.5
           }}>
-            💡 Get the API URL from Telegram after starting JARVIS
+            Please ensure the JARVIS backend is running and <br/> Cloudflare Tunnel is active.
           </div>
         </div>
 
-        {/* Status info */}
+        {/* Footer info */}
         <div style={{
-          marginTop: 24, display: "flex", gap: 8, justifyContent: "center",
-          fontSize: "0.75rem", color: "rgba(226,232,240,0.3)"
+          marginTop: 32, display: "flex", gap: 16, justifyContent: "center",
+          fontSize: "0.7rem", color: "rgba(226,232,240,0.25)", fontWeight: 500, letterSpacing: "0.05em"
         }}>
-          <span>v2.0.0</span>
+          <span>v2.0.0-Stable</span>
           <span>•</span>
-          <span>Portable AI Control System</span>
+          <span>Encrypted Session</span>
           <span>•</span>
-          <span>Secure</span>
+          <span>System Ready</span>
         </div>
       </div>
+      
+      <style>{`
+        @keyframes shake {
+          10%, 90% { transform: translate3d(-1px, 0, 0); }
+          20%, 80% { transform: translate3d(2px, 0, 0); }
+          30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+          40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+      `}</style>
     </div>
   );
 }

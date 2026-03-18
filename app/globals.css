@@ -97,8 +97,23 @@ body::before {
 
 /* Responsive Table */
 @media (max-width: 640px) {
-  .responsive-hide { display: none; }
+  .responsive-hide { display: none !important; }
   .jarvis-card { border-radius: 8px; }
+  .mobile-p-0 { padding: 0 !important; }
+  .mobile-p-2 { padding: 8px !important; }
+  .mobile-gap-2 { gap: 8px !important; }
+}
+
+@media (max-width: 480px) {
+  .xs-hide { display: none !important; }
+}
+
+/* Animations */
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
 /* Input Styles */

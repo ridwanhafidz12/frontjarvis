@@ -496,6 +496,7 @@ export default function FilesTab() {
                     </th>
                     <th
                       onClick={() => toggleSort("size")}
+                      className="xs-hide"
                       style={{ padding: "10px 14px", textAlign: "right",
                         color: "rgba(226,232,240,0.5)", fontWeight: 600, cursor: "pointer",
                         userSelect: "none", whiteSpace: "nowrap",
@@ -505,6 +506,7 @@ export default function FilesTab() {
                     </th>
                     <th
                       onClick={() => toggleSort("modified")}
+                      className="responsive-hide"
                       style={{ padding: "10px 14px", textAlign: "right",
                         color: "rgba(226,232,240,0.5)", fontWeight: 600, cursor: "pointer",
                         userSelect: "none", whiteSpace: "nowrap",
@@ -536,9 +538,9 @@ export default function FilesTab() {
                         {item.name}
                       </td>
                       <td style={{ padding: "9px 14px", textAlign: "right",
-                        color: "rgba(226,232,240,0.2)", fontSize: "0.78rem" }}>—</td>
+                        color: "rgba(226,232,240,0.2)", fontSize: "0.78rem" }} className="xs-hide">—</td>
                       <td style={{ padding: "9px 14px", textAlign: "right",
-                        color: "rgba(226,232,240,0.3)", fontSize: "0.75rem" }}>
+                        color: "rgba(226,232,240,0.3)", fontSize: "0.75rem" }} className="responsive-hide">
                         {item.modified ?? "—"}
                       </td>
                       <td style={{ padding: "9px 14px", textAlign: "center" }}>
@@ -578,12 +580,12 @@ export default function FilesTab() {
                       <td style={{ padding: "9px 14px", textAlign: "right",
                         color: "rgba(226,232,240,0.45)", fontSize: "0.78rem",
                         fontFamily: "monospace", whiteSpace: "nowrap",
-                      }}>
+                      }} className="xs-hide">
                         {formatSize(item.size)}
                       </td>
                       <td style={{ padding: "9px 14px", textAlign: "right",
                         color: "rgba(226,232,240,0.3)", fontSize: "0.75rem", whiteSpace: "nowrap",
-                      }}>
+                      }} className="responsive-hide">
                         {item.modified ?? "—"}
                       </td>
                       <td style={{ padding: "9px 14px", textAlign: "center" }}>

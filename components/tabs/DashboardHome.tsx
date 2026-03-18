@@ -307,62 +307,81 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats Grid */}
         {loading ? (
-          <div style={{ display:"flex", justifyContent:"center", alignItems:"center", padding:60, gap:12,
-            color:"rgba(226,232,240,0.3)", fontSize:"0.85rem" }}>
-            <span style={{ width:24, height:24, borderRadius:"50%",
-              border:"2px solid rgba(0,212,255,0.3)", borderTopColor:"#00d4ff",
-              display:"inline-block", animation:"jarvis-spin 0.7s linear infinite" }} />
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 60, gap: 12,
+            color: "rgba(226,232,240,0.3)", fontSize: "0.85rem" }}>
+            <span style={{ width: 24, height: 24, borderRadius: "50%",
+              border: "2px solid rgba(0,212,255,0.3)", borderTopColor: "#00d4ff",
+              display: "inline-block", animation: "jarvis-spin 0.7s linear infinite" }} />
             Loading system data…
           </div>
         ) : (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(185px, 1fr))", gap:12 }}>
-            <StatCard icon="🖥️" label="CPU"
-              value={`${cpu.toFixed(1)}%`} percent={cpu} danger />
-            <StatCard icon="🧠" label="RAM"
-              value={`${ramUsed(status)} MB`} sub={`of ${ramTotal(status)} MB`}
-              percent={status.ram_percent} danger />
-            <StatCard icon="💾" label="Disk"
-              value={`${diskUsed(status)} GB`} sub={`of ${diskTotal(status)} GB`}
-              percent={status.disk_percent} danger />
-            {status.battery_percent !== null && status.battery_percent !== undefined ? (
-              <StatCard
-                icon={status.battery_plugged ? "⚡" : "🔋"}
-                label={status.battery_plugged ? "Battery (Charging)" : "Battery"}
-                value={`${Math.round(status.battery_percent)}%`}
-                percent={status.battery_percent}
-                danger={!status.battery_plugged}
-              />
-            ) : (
-              <StatCard icon="🔌" label="Power" value="Desktop" sub="No battery" />
-            )}
-            <StatCard icon="🏠" label="Local IP"  value={status.local_ip  ?? "—"} sub="LAN" />
-            <StatCard icon="🌍" label="Public IP" value={status.public_ip ?? "—"} sub="WAN" />
-            {status.location && (
-              <StatCard icon="📍" label="Location"
-                value={[status.location.city, status.location.country].filter(Boolean).join(", ") || "—"}
-                sub={[status.location.regionName, status.location.isp].filter(Boolean).join(" · ")}
-                wide />
-            )}
-          </div>
-        )}
+          <>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              gap: 16, marginBottom: 24
+            }}>
+              <StatCard icon="⚡" label="CPU Usage" value={`${cpu.toFixed(1)}%`} percent={cpu} danger />
+              <StatCard icon="💾" label="RAM Usage" value={`${(ramUsed(status)/1024).toFixed(1)} GB`} sub={`of ${(ramTotal(status)/1024).toFixed(1)} GB`} percent={status.ram_percent} danger />
+              <StatCard icon="💽" label="Disk Usage" value={`${(diskUsed(status)).toFixed(1)} GB`} sub={`of ${(diskTotal(status)).toFixed(1)} GB`} percent={status.disk_percent} danger />
+              <StatCard icon="🔋" label="Battery" value={status.battery_percent !== null && status.battery_percent !== undefined ? `${Math.round(status.battery_percent)}%` : "N/A"}
+                sub={status.battery_plugged ? "🔌 Charging" : "🔋 Discharging"} percent={status.battery_percent ?? 0} />
+            </div>
 
-        {/* Quick Actions */}
-        <div style={{
-          background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)",
-          borderRadius:12, padding:"16px 18px",
-        }}>
-          <div style={{ fontSize:"0.68rem", color:"rgba(226,232,240,0.4)", fontWeight:600,
-            letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:14 }}>
-            ⚡ Quick Actions
-          </div>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-            {QUICK_ACTIONS.map(a => (
-              <ActionBtn key={a.label} action={a} onResult={showToast} />
-            ))}
-          </div>
-        </div>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 350px), 1fr))",
+              gap: 16, marginBottom: 24
+            }}>
+              {/* Network & Location */}
+              <div style={{
+                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: 12, padding: 20
+              }}>
+                <h3 style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: 16, color: "#00d4ff", display: "flex", alignItems: "center", gap: 8 }}>
+                  🌐 Network & Location
+                </h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 8 }}>
+                    <span style={{ fontSize: "0.8rem", color: "rgba(226,232,240,0.4)" }}>Local IP</span>
+                    <span style={{ fontSize: "0.85rem", fontFamily: "monospace" }}>{status.local_ip || "—"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 8 }}>
+                    <span style={{ fontSize: "0.8rem", color: "rgba(226,232,240,0.4)" }}>Public IP</span>
+                    <span style={{ fontSize: "0.85rem", fontFamily: "monospace" }}>{status.public_ip || "—"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 8 }}>
+                    <span style={{ fontSize: "0.8rem", color: "rgba(226,232,240,0.4)" }}>ISP</span>
+                    <span style={{ fontSize: "0.85rem", textAlign: "right" }}>{status.location?.isp || "—"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: "0.8rem", color: "rgba(226,232,240,0.4)" }}>Location</span>
+                    <span style={{ fontSize: "0.85rem" }}>
+                      {status.location ? `${status.location.city}, ${status.location.country}` : "—"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div style={{
+                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: 12, padding: 20
+              }}>
+                <h3 style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: 16, color: "#00d4ff", display: "flex", alignItems: "center", gap: 8 }}>
+                  🚀 Quick Actions
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 10 }}>
+                  {QUICK_ACTIONS.map(a => (
+                    <ActionBtn key={a.label} action={a} onResult={showToast} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Screenshot */}
         {screenshotData && (
