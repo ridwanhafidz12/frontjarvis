@@ -17,13 +17,17 @@ import VaultTab      from "@/components/tabs/VaultTab";
 import ProcessTab    from "@/components/tabs/ProcessTab";
 import VoiceTab      from "@/components/tabs/VoiceTab";
 import BrowserTab    from "@/components/tabs/BrowserTab";
+import AppsTab       from "@/components/tabs/AppsTab";
+import StartupTab    from "@/components/tabs/StartupTab";
+import ClipboardTab  from "@/components/tabs/ClipboardTab";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
 type TabId =
   | "home" | "control" | "terminal" | "files"
   | "ai" | "voice" | "browser" | "cctv" | "keylogger" | "prank"
-  | "config" | "logs" | "vault" | "processes";
+  | "config" | "logs" | "vault" | "processes"
+  | "apps" | "startup" | "clipboard";
 
 interface NavItem {
   id:        TabId;
@@ -45,10 +49,13 @@ const NAV_ITEMS: NavItem[] = [
   { id: "browser",   icon: "🌐", label: "Browser",    component: BrowserTab,    pinMobile: false },
   { id: "cctv",      icon: "📹", label: "CCTV",       component: CctvTab   },
   { id: "processes", icon: "⚙️", label: "Processes",  component: ProcessTab },
+  { id: "apps",      icon: "🖥️", label: "Apps",       component: AppsTab },
+  { id: "startup",   icon: "🚀", label: "Startup",    component: StartupTab },
+  { id: "clipboard", icon: "📋", label: "Clipboard",  component: ClipboardTab },
   { id: "keylogger", icon: "⌨️", label: "Keylogger",  component: KeyloggerTab  },
   { id: "prank",     icon: "🎭", label: "Prank",      component: PrankTab  },
   { id: "config",    icon: "🔧", label: "Config",     component: ConfigTab },
-  { id: "logs",      icon: "📋", label: "Logs",       component: LogsTab   },
+  { id: "logs",      icon: "📝", label: "Logs",       component: LogsTab   },
   { id: "vault",     icon: "🔐", label: "Vault",      component: VaultTab  },
 ];
 
