@@ -30,19 +30,20 @@ export default function HomePage() {
     check();
 
     // Auto-fill from URL params or current origin
-    const params   = new URLSearchParams(window.location.search);
-    const urlParam = params.get("url") || params.get("api");
-    const pwParam  = params.get("pw") || params.get("password");
+    const params    = new URLSearchParams(window.location.search);
+    const urlParam  = params.get("url") || params.get("api") || null;
+    const pwParam   = params.get("pw") || params.get("password") || null;
+    const autoLogin = params.get("auto_login") === "1";
+    const origin    = typeof window !== "undefined" ? window.location.origin : "";
 
-    if (urlParam) {
-      setApiUrl(urlParam);
-    } else if (typeof window !== "undefined") {
-      setApiUrl(window.location.origin);
-    }
+    // Always set base URL (prefer explicit param, fallback to current origin)
+    const resolvedUrl = urlParam || origin;
+    if (resolvedUrl) setApiUrl(resolvedUrl);
     if (pwParam) setPassword(pwParam);
 
-    if (urlParam && pwParam) {
-      handleLogin(urlParam, pwParam);
+    // Auto-login: triggered either by explicit url+pw params OR auto_login flag with password
+    if (pwParam && (urlParam || autoLogin)) {
+      handleLogin(resolvedUrl, pwParam);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
