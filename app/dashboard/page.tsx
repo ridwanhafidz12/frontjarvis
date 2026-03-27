@@ -477,6 +477,64 @@ export default function DashboardPage() {
               </button>
             )}
 
+            {/* HUD Mode button */}
+            <button
+              onClick={() => router.push("/hud")}
+              title={collapsed ? "JARVIS HUD" : undefined}
+              style={{
+                width: "100%", textAlign: "left",
+                padding: collapsed ? "9px 0" : "9px 14px",
+                borderRadius: 8,
+                display: "flex", alignItems: "center",
+                justifyContent: collapsed ? "center" : "flex-start",
+                gap: collapsed ? 0 : 10,
+                cursor: "pointer",
+                background: "rgba(0,212,255,0.06)",
+                border: "1px solid rgba(0,212,255,0.15)",
+                color: "#00d4ff",
+                fontFamily: "inherit", fontSize: "0.85rem",
+                minHeight: 40,
+                transition: "all 0.15s",
+                marginBottom: 4,
+              }}
+            >
+              <span style={{ fontSize: "1rem" }}>🎙</span>
+              {!collapsed && (
+                <span style={{ fontWeight: 600, animation: "dash-fadein 0.2s ease both", letterSpacing: "0.05em" }}>
+                  VOICE HUD
+                </span>
+              )}
+            </button>
+
+            {/* Hive Mind button */}
+            <button
+              onClick={() => router.push("/hive")}
+              title={collapsed ? "Hive Mind" : undefined}
+              style={{
+                width: "100%", textAlign: "left",
+                padding: collapsed ? "9px 0" : "9px 14px",
+                borderRadius: 8,
+                display: "flex", alignItems: "center",
+                justifyContent: collapsed ? "center" : "flex-start",
+                gap: collapsed ? 0 : 10,
+                cursor: "pointer",
+                background: "rgba(124,58,237,0.06)",
+                border: "1px solid rgba(124,58,237,0.15)",
+                color: "#a78bfa",
+                fontFamily: "inherit", fontSize: "0.85rem",
+                minHeight: 40,
+                transition: "all 0.15s",
+                marginBottom: 4,
+              }}
+            >
+              <span style={{ fontSize: "1rem" }}>🌐</span>
+              {!collapsed && (
+                <span style={{ fontWeight: 600, animation: "dash-fadein 0.2s ease both", letterSpacing: "0.05em" }}>
+                  HIVE MIND
+                </span>
+              )}
+            </button>
+
             {/* Logout */}
             <button
               onClick={handleLogout}

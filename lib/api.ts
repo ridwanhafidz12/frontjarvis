@@ -304,6 +304,18 @@ export async function askAI(message: string, userId = 1) {
   });
 }
 
+export async function chatAI(
+  message: string,
+  userId = 1,
+  tts = false,
+) {
+  return request("/api/ai/chat", {
+    method:  "POST",
+    body:    JSON.stringify({ message, user_id: userId, tts }),
+    timeout: 60000,
+  });
+}
+
 // ── Config ──────────────────────────────────────────────────────────────────
 
 export async function getConfig() {
@@ -338,6 +350,7 @@ export async function getMetrics() {
 
 // ── URLs ─────────────────────────────────────────────────────────────────────
 
+
 export function getCctvUrl(): string {
   const base  = getApiBase();
   const token = getToken();
@@ -348,4 +361,60 @@ export function getStreamUrl(): string {
   const base  = getApiBase();
   const token = getToken();
   return `${base}/stream?token=${token}`;
+}
+
+// ── Hive Mind ────────────────────────────────────────────────────────────────
+
+export async function hiveStatus() {
+  return request("/api/hive/status");
+}
+
+export async function hiveFleet() {
+  return request("/api/hive/fleet");
+}
+
+export async function hiveSendCommand(
+  target: string,
+  action: string,
+  params: Record<string, any> = {},
+) {
+  return request("/api/hive/command", {
+    method:  "POST",
+    body:    JSON.stringify({ target, action, params }),
+  });
+}
+
+export async function hiveGetResult(cmdId: string) {
+  return request(`/api/hive/result/${cmdId}`);
+}
+
+export async function hiveAskAI(target: string, question: string) {
+  return request("/api/hive/ask", {
+    method:  "POST",
+    body:    JSON.stringify({ target, question }),
+    timeout: 30000,
+  });
+}
+
+export async function hiveUpdateConfig(data: {
+  hive_pc_name?:  string;
+  hive_enabled?:  boolean;
+  supabase_url?:  string;
+  supabase_key?:  string;
+}) {
+  return request("/api/hive/config", {
+    method: "POST",
+    body:   JSON.stringify(data),
+  });
+}
+
+export async function getAIAgents() {
+  return request("/api/ai/agents");
+}
+
+export async function switchAIAgent(agent: "groq" | "gemini" | "openrouter") {
+  return request("/api/ai/switch", {
+    method: "POST",
+    body:   JSON.stringify({ agent }),
+  });
 }
